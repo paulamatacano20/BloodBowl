@@ -32,7 +32,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-	public static SessionFactory sessionFactory;
+	public static SessionFactory sessionFactory = new Configuration()
+		    .configure("/org/nitish/caller/hibernate.cfg.xml").buildSessionFactory();
+	
 	public static Session session;
 	@Autowired
 	private IUsuarioService usuarioService;
