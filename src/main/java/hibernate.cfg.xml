@@ -5,9 +5,9 @@
 <hibernate-configuration>
     <session-factory>
         <property name="hibernate.connection.driver_class">org.postgresql.Driver</property>
-        <property name="hibernate.connection.password">2412</property>
-        <property name="hibernate.connection.url">jdbc:postgresql://localhost:5432/bloodbowl</property>
-        <property name="hibernate.connection.username">postgres</property>
+        <property name="hibernate.connection.password">5432</property>
+        <property name="hibernate.connection.url">jdbc:postgresql://ec2-34-246-227-219.eu-west-1.compute.amazonaws.com:5432/dep32qosqo3i4r</property>
+        <property name="hibernate.connection.username">vxitlhrrbkkffa</property>
         <property name="hibernate.default_schema">public</property>
         <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
         <mapping class = "com.paulamata.bloodbowlteams.entity.Usuarios"/>
