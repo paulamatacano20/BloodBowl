@@ -32,7 +32,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-	public static SessionFactory sessionFactory;
+	public static SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
 	public static Session session;
 	@Autowired
 	private IUsuarioService usuarioService;
