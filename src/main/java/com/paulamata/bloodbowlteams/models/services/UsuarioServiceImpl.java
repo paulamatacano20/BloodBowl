@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.paulamata.bloodbowlteams.dao.IUsuarioDAO;
 import com.paulamata.bloodbowlteams.dto.UsuarioDTO;
+import com.paulamata.bloodbowlteams.entity.UdIncentivos;
 import com.paulamata.bloodbowlteams.entity.Usuarios;
 import com.paulamata.bloodbowlteams.utils.SecurityUtils;
 
@@ -59,6 +60,11 @@ public class UsuarioServiceImpl implements IUsuarioService {
 		
 		
 		
+	}
+
+	@Override
+	public List<Usuarios> findAll() {
+		return (List<Usuarios>) usuarioDao.findAll();
 	}
 
 	

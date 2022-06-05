@@ -32,7 +32,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
-	public static SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+	public static SessionFactory sessionFactory = null;
 	public static Session session;
 	@Autowired
 	private IUsuarioService usuarioService;
@@ -80,15 +80,8 @@ public class AuthController {
 		return token;
 	}
 	private boolean consultarUsuarios(UsuarioDTO usuarioDto) {
-		sessionFactory = new Configuration().configure().buildSessionFactory();
-		session = sessionFactory.openSession();
-		String consulta = "select * FROM usuarios WHERE nombre = '"+usuarioDto.getNombre()+"'";
-		
-		List<Usuarios> list = session.createNativeQuery(consulta)
-				.addEntity(Usuarios.class)
-				.list();
-		session.close();
-		if(list.size() > 0)
+		List<Usuarios> list = usuarioService.findAll();
+		if(list.contains(usuarioDto))
 			return true;
 		else
 			return false;
