@@ -9,7 +9,7 @@
         <property name="hibernate.connection.url">jdbc:postgresql://ec2-34-246-227-219.eu-west-1.compute.amazonaws.com:5432/dep32qosqo3i4r?useSSL=false</property>
         <property name="hibernate.connection.username">vxitlhrrbkkffa</property>
         <property name="hibernate.default_schema">public</property>
-        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.PostgreSQL10Dialect</property>
         <mapping class = "com.paulamata.bloodbowlteams.entity.Usuarios"/>
     </session-factory>
 </hibernate-configuration>
