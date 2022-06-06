@@ -8,12 +8,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paulamata.bloodbowlteams.dto.RespuestaLoginDTO;
 import com.paulamata.bloodbowlteams.dto.UsuarioDTO;
 import com.paulamata.bloodbowlteams.entity.Usuarios;
+import com.paulamata.bloodbowlteams.models.services.EmailService;
 import com.paulamata.bloodbowlteams.models.services.IUsuarioService;
 import com.paulamata.bloodbowlteams.security.SecurityConstants;
 
@@ -31,11 +38,14 @@ import io.jsonwebtoken.SignatureAlgorithm;
 
 @RestController
 @RequestMapping("/auth")
-public class AuthController {
+public class AuthController{
 	public static SessionFactory sessionFactory = null;
 	public static Session session;
 	@Autowired
 	private IUsuarioService usuarioService;
+	
+	@Autowired
+	private EmailService sender;
 	
 	@PostMapping("/login")
 	public ResponseEntity<RespuestaLoginDTO> login(@RequestBody UsuarioDTO usuarioLogin){	
@@ -60,6 +70,26 @@ public class AuthController {
 		}else {
 			return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
 		}
+	}
+	@PostMapping("/restablecer")
+	public ResponseEntity<Void> restablecer(@RequestBody String usuario) throws NoSuchAlgorithmException{
+		
+		boolean find = false;
+		for (Usuarios u : usuarioService.findAll()) {
+			if(u.getNombre() == usuario) {
+
+				sender.sendMail(usuario, "paulisken@gmail.com", "Su contraseña es "+u.getContrasenya());
+				return ResponseEntity.status(HttpStatus.CREATED).body(null);
+			}
+		
+		}
+		if(!find) {
+			sender.sendMail(usuario, "paulisken@gmail.com", "El usuario "+ usuario + " no está dado de alta");
+			
+		}
+		return ResponseEntity.status(HttpStatus.CREATED).body(null);
+			
+			
 	}
 
 	
