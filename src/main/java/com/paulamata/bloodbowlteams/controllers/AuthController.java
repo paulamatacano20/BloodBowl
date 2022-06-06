@@ -1,17 +1,28 @@
 package com.paulamata.bloodbowlteams.controllers;
 
 
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 
+import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
+import javax.mail.PasswordAuthentication;
+import javax.mail.Session;
+import javax.mail.Transport;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
-import org.hibernate.Session;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +40,6 @@ import org.springframework.web.bind.annotation.RestController;
 import com.paulamata.bloodbowlteams.dto.RespuestaLoginDTO;
 import com.paulamata.bloodbowlteams.dto.UsuarioDTO;
 import com.paulamata.bloodbowlteams.entity.Usuarios;
-import com.paulamata.bloodbowlteams.models.services.EmailService;
 import com.paulamata.bloodbowlteams.models.services.IUsuarioService;
 import com.paulamata.bloodbowlteams.security.SecurityConstants;
 
@@ -43,9 +53,6 @@ public class AuthController{
 	public static Session session;
 	@Autowired
 	private IUsuarioService usuarioService;
-	
-	@Autowired
-	private EmailService sender;
 	
 	@PostMapping("/login")
 	public ResponseEntity<RespuestaLoginDTO> login(@RequestBody UsuarioDTO usuarioLogin){	
@@ -72,19 +79,55 @@ public class AuthController{
 		}
 	}
 	@PostMapping("/restablecer")
-	public ResponseEntity<Void> restablecer(@RequestBody String usuario) throws NoSuchAlgorithmException{
+	public ResponseEntity<Void> restablecer(@RequestBody String usuario) throws NoSuchAlgorithmException, IOException{
 		
 		boolean find = false;
 		for (Usuarios u : usuarioService.findAll()) {
 			if(u.getNombre() == usuario) {
 
-				sender.sendMail(usuario, "paulisken@gmail.com", "Su contraseña es "+u.getContrasenya());
+				Properties props = new Properties();
+				   props.put("mail.smtp.auth", "true");
+				   props.put("mail.smtp.starttls.enable", "true");
+				   props.put("mail.smtp.host", "paulisken@gmail.com");
+				   props.put("mail.smtp.port", "587");
+				   
+				   Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+				      protected PasswordAuthentication getPasswordAuthentication() {
+				         return new PasswordAuthentication("paulisken@gmail.com", "<your password>");
+				      }
+				   });
+				   Message msg = new MimeMessage(session);
+				   try {
+					msg.setFrom(new InternetAddress(u.getNombre(), false));
+
+					   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(u.getNombre()));
+					   msg.setSubject("Tutorials point email");
+					   msg.setContent("Tutorials point email", "text/html");
+					   msg.setSentDate(new Date());
+
+					   MimeBodyPart messageBodyPart = new MimeBodyPart();
+					   messageBodyPart.setContent("Tutorials point email", "text/html");
+
+					   Multipart multipart = new MimeMultipart();
+					   multipart.addBodyPart(messageBodyPart);
+					   MimeBodyPart attachPart = new MimeBodyPart();
+					   multipart.addBodyPart(attachPart);
+					   msg.setContent(multipart);
+					   Transport.send(msg);   
+				} catch (AddressException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (MessagingException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+
 				return ResponseEntity.status(HttpStatus.CREATED).body(null);
 			}
 		
 		}
 		if(!find) {
-			sender.sendMail(usuario, "paulisken@gmail.com", "El usuario "+ usuario + " no está dado de alta");
+			
 			
 		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(null);
