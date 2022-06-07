@@ -18,8 +18,8 @@ public class NotificationService {
 		SimpleMailMessage mail = new SimpleMailMessage();
 		mail.setTo(usuario);
 		mail.setFrom("paulisken@gmail.com");
-		mail.setSubject("hola1");
-		mail.setText("hola 2");
+		mail.setSubject("Recuperación de contraseña");
+		mail.setText("Su contraseña es ");
 
 		
 		javaMailSender.send(mail);
