@@ -15,7 +15,6 @@
 	<description>Demo project for Spring Boot</description>
 	<properties>
 		<java.version>8</java.version>
-		<email.version>1.16.18</email.version>
 	</properties>
 	<dependencies>
 		<dependency>
@@ -94,12 +93,6 @@
 		    <version>2.6.7</version>
 		</dependency>
 		
-  		<!-- https://mvnrepository.com/artifact/org.springframework/spring-orm -->
-		<dependency>
-		    <groupId>org.springframework</groupId>
-		    <artifactId>spring-orm</artifactId>
-		    <version>5.3.20</version>
-		</dependency>
  
 		<!-- https://mvnrepository.com/artifact/org.springframework.plugin/spring-plugin-core -->
 		<dependency>
@@ -108,23 +101,42 @@
 		    <version>2.0.0.RELEASE</version>
 		</dependency>
 		<!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-compiler-plugin -->
-	<dependency>
-	    <groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-compiler-plugin</artifactId>
-	    <version>3.8.1</version>
-	</dependency>
-	
-	<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
-<dependency>
-    <groupId>org.springframework</groupId>
-    <artifactId>spring-context-support</artifactId>
-    <version>5.3.20</version>
-</dependency>
-	
-
-	
+		<dependency>
+		    <groupId>org.apache.maven.plugins</groupId>
+		    <artifactId>maven-compiler-plugin</artifactId>
+		    <version>3.8.1</version>
+		</dependency>
 		
-
+		<!-- https://mvnrepository.com/artifact/org.springframework/spring-context-support -->
+		<dependency>
+		    <groupId>org.springframework</groupId>
+		    <artifactId>spring-context-support</artifactId>
+		    <version>5.3.16</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-mail -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-mail</artifactId>
+		    <version>2.6.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-web -->
+		<dependency>
+		    <groupId>org.springframework.boot</groupId>
+		    <artifactId>spring-boot-starter-web</artifactId>
+		    <version>2.6.4</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/com.sun.mail/smtp -->
+		<dependency>
+		    <groupId>com.sun.mail</groupId>
+		    <artifactId>smtp</artifactId>
+		    <version>1.4.3</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/javax.mail/mailapi -->
+		<dependency>
+		    <groupId>javax.mail</groupId>
+		    <artifactId>mailapi</artifactId>
+		    <version>1.4.3</version>
+		</dependency>
 	</dependencies>
 	<build>
 		<plugins>

@@ -26,6 +26,8 @@ import javax.mail.internet.MimeMultipart;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -41,7 +43,9 @@ import com.paulamata.bloodbowlteams.dto.RespuestaLoginDTO;
 import com.paulamata.bloodbowlteams.dto.UsuarioDTO;
 import com.paulamata.bloodbowlteams.entity.Usuarios;
 import com.paulamata.bloodbowlteams.models.services.IUsuarioService;
+import com.paulamata.bloodbowlteams.models.services.NotificationService;
 import com.paulamata.bloodbowlteams.security.SecurityConstants;
+import org.apache.catalina.connector.ClientAbortException;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -53,6 +57,9 @@ public class AuthController{
 	public static Session session;
 	@Autowired
 	private IUsuarioService usuarioService;
+	
+	@Autowired
+	private NotificationService notificationService;
 	
 	@PostMapping("/login")
 	public ResponseEntity<RespuestaLoginDTO> login(@RequestBody UsuarioDTO usuarioLogin){	
@@ -79,60 +86,29 @@ public class AuthController{
 		}
 	}
 	@PostMapping("/restablecer")
-	public ResponseEntity<Void> restablecer(@RequestBody String usuario) throws NoSuchAlgorithmException, IOException{
+	public ResponseEntity<Void> restablecer(@RequestBody String usuario) throws NoSuchAlgorithmException, IOException, AddressException, MessagingException{
 		
-		boolean find = false;
+		boolean find = true;
 		for (Usuarios u : usuarioService.findAll()) {
-			if(u.getNombre() == usuario) {
-
-				Properties props = new Properties();
-				   props.put("mail.smtp.auth", "true");
-				   props.put("mail.smtp.starttls.enable", "true");
-				   props.put("mail.smtp.host", "paulisken@gmail.com");
-				   props.put("mail.smtp.port", "587");
-				   
-				   Session session = Session.getInstance(props, new javax.mail.Authenticator() {
-				      protected PasswordAuthentication getPasswordAuthentication() {
-				         return new PasswordAuthentication("paulisken@gmail.com", "paulita1116");
-				      }
-				   });
-				   Message msg = new MimeMessage(session);
-				   try {
-					msg.setFrom(new InternetAddress(u.getNombre(), false));
-
-					   msg.setRecipients(Message.RecipientType.TO, InternetAddress.parse(u.getNombre()));
-					   msg.setSubject("Tutorials point email");
-					   msg.setContent("Tutorials point email", "text/html");
-					   msg.setSentDate(new Date());
-
-					   MimeBodyPart messageBodyPart = new MimeBodyPart();
-					   messageBodyPart.setContent("Tutorials point email", "text/html");
-
-					   Multipart multipart = new MimeMultipart();
-					   multipart.addBodyPart(messageBodyPart);
-					   MimeBodyPart attachPart = new MimeBodyPart();
-					   multipart.addBodyPart(attachPart);
-					   msg.setContent(multipart);
-					   Transport.send(msg);   
-				} catch (AddressException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (MessagingException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-				return ResponseEntity.status(HttpStatus.CREATED).body(null);
+			if(u.getNombre().contains(usuario)) {
+				find = true;
 			}
+
+		}
+		if(find) {
+			
+			restablecer2(usuario);
+
+			return ResponseEntity.status(HttpStatus.CREATED).body(null);
+		}
 		
-		}
-		if(!find) {
-			
-			
-		}
 		return ResponseEntity.status(HttpStatus.CREATED).body(null);
 			
 			
+	}
+
+	private void restablecer2(String usuario) throws AddressException, MessagingException, IOException {
+		notificationService.sendNotification(usuario);
 	}
 
 	
